@@ -1,0 +1,578 @@
+/* ==========================================================================
+   3D Map Viewer – styles
+   ========================================================================== */
+
+:root {
+    --font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    --accent: #3b82f6;
+    --danger: #ef4444;
+    --radius: 14px;
+    /* Dark theme (default) */
+    --bg-1: #1d2535;
+    --bg-2: #0c1018;
+    --panel: rgba(22, 28, 40, 0.72);
+    --panel-solid: #161c28;
+    --border: rgba(255, 255, 255, 0.10);
+    --text: #e8ecf4;
+    --muted: #9aa5b8;
+    --hover: rgba(255, 255, 255, 0.08);
+    --active-bg: rgba(59, 130, 246, 0.24);
+    --active-fg: #8ab8ff;
+    --track: rgba(255, 255, 255, 0.12);
+    --shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+    color-scheme: dark;
+}
+
+:root[data-theme="light"] {
+    --bg-1: #ffffff;
+    --bg-2: #dfe6f1;
+    --panel: rgba(255, 255, 255, 0.78);
+    --panel-solid: #ffffff;
+    --border: rgba(15, 23, 42, 0.10);
+    --text: #182033;
+    --muted: #5d6a82;
+    --hover: rgba(15, 23, 42, 0.06);
+    --active-bg: rgba(59, 130, 246, 0.16);
+    --active-fg: #1d4ed8;
+    --track: rgba(15, 23, 42, 0.10);
+    --shadow: 0 10px 30px rgba(30, 41, 59, 0.16);
+    color-scheme: light;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+[hidden] {
+    display: none !important;
+}
+
+html,
+body {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    font-family: var(--font);
+    color: var(--text);
+    background: var(--bg-2);
+    overflow: hidden;
+    overscroll-behavior: none;
+    -webkit-font-smoothing: antialiased;
+    -webkit-text-size-adjust: 100%;
+}
+
+.app {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+}
+
+
+/* ---------- Viewer ---------- */
+
+.viewer {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(120% 95% at 50% 25%, var(--bg-1) 0%, var(--bg-2) 100%);
+}
+
+#viewport {
+    display: block;
+    width: 100%;
+    height: 100%;
+    outline: none;
+    cursor: grab;
+    touch-action: none;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.viewer.is-dragging #viewport {
+    cursor: grabbing;
+}
+
+
+/* ---------- Shared glass panel ---------- */
+
+.panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    -webkit-backdrop-filter: blur(14px) saturate(1.4);
+    backdrop-filter: blur(14px) saturate(1.4);
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .panel {
+        background: var(--panel-solid);
+    }
+}
+
+
+/* ---------- Info card ---------- */
+
+.info {
+    position: absolute;
+    top: max(16px, env(safe-area-inset-top));
+    left: max(16px, env(safe-area-inset-left));
+    max-width: min(380px, calc(100% - 100px));
+    padding: 10px 14px;
+    animation: fade-in 0.4s ease both;
+}
+
+.info__title {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 650;
+    letter-spacing: 0.01em;
+}
+
+.info__stats {
+    margin: 2px 0 0;
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.4;
+}
+
+
+/* ---------- Compass ---------- */
+
+.compass {
+    position: absolute;
+    top: max(16px, env(safe-area-inset-top));
+    right: max(16px, env(safe-area-inset-right));
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    padding: 0;
+    border-radius: 50%;
+    color: var(--text);
+    cursor: pointer;
+    transition: background 0.15s ease, transform 0.1s ease;
+    -webkit-tap-highlight-color: transparent;
+    animation: fade-in 0.4s ease both;
+}
+
+.compass:hover {
+    background: var(--panel-solid);
+}
+
+.compass:active {
+    transform: scale(0.94);
+}
+
+.compass:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+.compass svg {
+    width: 34px;
+    height: 34px;
+    will-change: transform;
+}
+
+
+/* ---------- Hint ---------- */
+
+.hint {
+    position: absolute;
+    top: max(16px, env(safe-area-inset-top));
+    left: 50%;
+    padding: 8px 16px;
+    border-radius: 999px;
+    font-size: 13px;
+    color: var(--muted);
+    white-space: nowrap;
+    opacity: 0;
+    transform: translate(-50%, -8px);
+    pointer-events: none;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.hint.is-visible {
+    opacity: 1;
+    transform: translate(-50%, 0);
+}
+
+
+/* ---------- Toolbar ---------- */
+
+.toolbar {
+    position: absolute;
+    left: 50%;
+    bottom: max(16px, env(safe-area-inset-bottom));
+    transform: translateX(-50%);
+    z-index: 10;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    width: max-content;
+    max-width: calc(100% - 24px);
+}
+
+.group {
+    display: flex;
+    gap: 2px;
+    padding: 4px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    -webkit-backdrop-filter: blur(14px) saturate(1.4);
+    backdrop-filter: blur(14px) saturate(1.4);
+}
+
+.btn {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 0;
+    border-radius: 10px;
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease, transform 0.1s ease, opacity 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.btn svg {
+    width: 22px;
+    height: 22px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.btn:hover {
+    background: var(--hover);
+}
+
+.btn:active {
+    transform: scale(0.93);
+}
+
+.btn:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+}
+
+.btn[aria-pressed="true"] {
+    background: var(--active-bg);
+    color: var(--active-fg);
+}
+
+.btn:disabled {
+    opacity: 0.35;
+    cursor: default;
+    pointer-events: none;
+}
+
+
+/* Tooltips (mouse devices only) */
+
+@media (hover: hover) and (pointer: fine) {
+    .btn[data-tip]:hover::after,
+    .compass[data-tip]:hover::after {
+        content: attr(data-tip);
+        position: absolute;
+        left: 50%;
+        padding: 5px 9px;
+        border-radius: 7px;
+        background: var(--panel-solid);
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
+        color: var(--text);
+        font-size: 12px;
+        font-weight: 500;
+        white-space: nowrap;
+        pointer-events: none;
+        animation: tip-in 0.15s ease 0.35s both;
+    }
+    .btn[data-tip]:hover::after {
+        bottom: calc(100% + 12px);
+    }
+    .compass[data-tip]:hover::after {
+        top: calc(100% + 8px);
+        left: auto;
+        right: 0;
+    }
+}
+
+
+/* ---------- Overlays (loader / error) ---------- */
+
+.overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 20;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+    background: radial-gradient(120% 95% at 50% 25%, var(--bg-1) 0%, var(--bg-2) 100%);
+    transition: opacity 0.45s ease, visibility 0s linear 0s;
+}
+
+.overlay.is-hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.45s ease, visibility 0s linear 0.45s;
+}
+
+.overlay.error {
+    background: var(--bg-2);
+}
+
+.card {
+    width: min(360px, 100%);
+    padding: 28px 24px;
+    text-align: center;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    box-shadow: var(--shadow);
+}
+
+.card__title {
+    margin: 14px 0 14px;
+    font-size: 17px;
+    font-weight: 650;
+}
+
+.card__text {
+    margin: 12px 0 0;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--muted);
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    margin: 0 auto;
+    border: 3px solid var(--track);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+.overlay.is-hidden .spinner {
+    animation-play-state: paused;
+}
+
+.bar {
+    position: relative;
+    height: 6px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: var(--track);
+}
+
+.bar>span {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(90deg, var(--accent), #60a5fa);
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.2s ease-out;
+}
+
+.bar.is-indeterminate>span {
+    width: 40%;
+    transform: none;
+    transition: none;
+    animation: indeterminate 1.2s ease-in-out infinite;
+}
+
+.error__icon {
+    width: 44px;
+    height: 44px;
+    fill: none;
+    stroke: var(--danger);
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.error .card__title {
+    margin-top: 10px;
+}
+
+.error__details {
+    margin: 14px 0 0;
+    padding: 10px 12px;
+    max-height: 120px;
+    overflow: auto;
+    text-align: left;
+    font-family: var(--mono);
+    font-size: 11px;
+    line-height: 1.45;
+    color: var(--muted);
+    background: var(--hover);
+    border-radius: 10px;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.cta {
+    margin-top: 18px;
+    padding: 10px 20px;
+    border: 0;
+    border-radius: 10px;
+    background: var(--accent);
+    color: #fff;
+    font: 600 14px var(--font);
+    cursor: pointer;
+    transition: filter 0.15s ease, transform 0.1s ease;
+}
+
+.cta:hover {
+    filter: brightness(1.1);
+}
+
+.cta:active {
+    transform: scale(0.97);
+}
+
+.cta:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+.noscript {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    display: grid;
+    place-items: center;
+    background: var(--bg-2);
+    color: var(--text);
+    font-family: var(--font);
+}
+
+
+/* ---------- Animations ---------- */
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes indeterminate {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(250%);
+    }
+}
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(-6px);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@keyframes tip-in {
+    from {
+        opacity: 0;
+        transform: translate(-50%, 4px);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+}
+
+.compass[data-tip]:hover::after {
+    animation-name: tip-in-right;
+}
+
+@keyframes tip-in-right {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 700px) {
+    .hint {
+        top: calc(max(16px, env(safe-area-inset-top)) + 62px);
+        max-width: calc(100% - 32px);
+        white-space: normal;
+        text-align: center;
+        border-radius: 14px;
+    }
+}
+
+@media (max-width: 600px) {
+    .toolbar {
+        gap: 6px;
+        bottom: max(12px, env(safe-area-inset-bottom));
+    }
+    .btn {
+        width: 42px;
+        height: 42px;
+    }
+    .btn svg {
+        width: 21px;
+        height: 21px;
+    }
+    .info {
+        padding: 8px 12px;
+    }
+    .compass {
+        width: 44px;
+        height: 44px;
+    }
+}
+
+@media (max-height: 420px) and (orientation: landscape) {
+    .hint,
+    .info__stats {
+        display: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        transition-delay: 0s !important;
+    }
+    .spinner {
+        animation: spin 1.6s linear infinite !important;
+    }
+}
