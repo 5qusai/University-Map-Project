@@ -9,12 +9,12 @@
     --danger: #ef4444;
     --radius: 14px;
     /* Dark theme (default) */
-    --bg-1: #1d2535;
-    --bg-2: #0c1018;
+    --bg-1: #28283b;
+    --bg-2: #31405e;
     --panel: rgba(22, 28, 40, 0.72);
     --panel-solid: #161c28;
     --border: rgba(255, 255, 255, 0.10);
-    --text: #e8ecf4;
+    --text: #c8c8c8;
     --muted: #9aa5b8;
     --hover: rgba(255, 255, 255, 0.08);
     --active-bg: rgba(59, 130, 246, 0.24);
@@ -120,7 +120,7 @@ body {
 
 .info {
     position: absolute;
-    top: max(16px, env(safe-area-inset-top));
+    bottom: max(16px, env(safe-area-inset-top));
     left: max(16px, env(safe-area-inset-left));
     max-width: min(380px, calc(100% - 100px));
     padding: 10px 14px;
@@ -129,9 +129,13 @@ body {
 
 .info__title {
     margin: 0;
-    font-size: 14px;
+    font-size: 10px;
     font-weight: 650;
     letter-spacing: 0.01em;
+    font-family: "Geist Mono", monospace;
+    font-optical-sizing: auto;
+    font-weight: weight;
+    font-style: normal;
 }
 
 .info__stats {
@@ -139,6 +143,7 @@ body {
     font-size: 12px;
     color: var(--muted);
     line-height: 1.4;
+    display: none;
 }
 
 
