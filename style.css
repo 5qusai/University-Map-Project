@@ -122,7 +122,7 @@ body {
     position: absolute;
     top: max(16px, env(safe-area-inset-top));
     left: max(16px, env(safe-area-inset-left));
-    max-width: min(380px, calc(100% - 100px));
+    max-width: min(310px, calc(100% - 100px));
     padding: 10px 14px;
     animation: fade-in 0.4s ease both;
 }
